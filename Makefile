@@ -4,17 +4,16 @@ IMAGE_NAME := assaflavie/runlike
 
 .PHONY: build
 build:
-	docker buildx build -t $(IMAGE_NAME) -t $(IMAGE_NAME):$(CUR_VER) --build-arg VERSION=$(CUR_VER) .
+	docker build -t $(IMAGE_NAME) -t $(IMAGE_NAME):$(CUR_VER) --build-arg VERSION=$(CUR_VER) .
 
 .PHONY: rebuild
 rebuild:
-	docker buildx build -t $(IMAGE_NAME) -t $(IMAGE_NAME):$(CUR_VER) --build-arg VERSION=$(CUR_VER) --no-cache=true .
+	docker build -t $(IMAGE_NAME) -t $(IMAGE_NAME):$(CUR_VER) --build-arg VERSION=$(CUR_VER) --no-cache=true .
 
 .PHONY: push
-push:
-    # build and push must happen at the same time to push multiple platforms
-	# https://github.com/docker/buildx/issues/1152
-	docker buildx build -t $(IMAGE_NAME) -t $(IMAGE_NAME):$(CUR_VER) --build-arg VERSION=$(CUR_VER) --no-cache=true --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64 --push .
+push: rebuild
+	docker push $(IMAGE_NAME) 
+	docker push $(IMAGE_NAME):$(CUR_VER)
 
 .PHONY: test
 test:
@@ -24,3 +23,8 @@ test:
 pypi:
 	poetry build
 	poetry publish -u __token__ -p $(POETRY_PYPI_TOKEN_PYPI)
+
+.PHONY: release
+release: push pypi
+
+
