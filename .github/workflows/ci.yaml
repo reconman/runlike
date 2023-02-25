@@ -40,10 +40,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
+        env:
+          IMAGE_NAME: ghcr.io/reconman/runlike
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          tags: ghcr.io/reconman/runlike:latest,ghcr.io/reconman/runlike:${{ env.VERSION }}
+          tags: |
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ env.VERSION }}
           build-args: |
             VERSION=${{ env.VERSION }}
           provenance: false
