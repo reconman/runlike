@@ -16,6 +16,7 @@ jobs:
   publish:
     # only run on master pushes
     if: github.ref == 'refs/heads/ghcr'
+    needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
