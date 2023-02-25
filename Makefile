@@ -1,20 +1,19 @@
 CUR_VER := $(shell poetry run ./current_version.py)
 SHELL := bash
+IMAGE_NAME := assaflavie/runlike
 
 .PHONY: build
 build:
-	docker build -t assaflavie/runlike --build-arg VERSION=$(CUR_VER) .
-	docker tag assaflavie/runlike assaflavie/runlike:$(CUR_VER)
+	docker buildx build -t $(IMAGE_NAME) -t $(IMAGE_NAME):$(CUR_VER) --build-arg VERSION=$(CUR_VER) .
 
 .PHONY: rebuild
 rebuild:
-	docker build -t assaflavie/runlike --build-arg VERSION=$(CUR_VER) --no-cache=true .
-	docker tag assaflavie/runlike assaflavie/runlike:$(CUR_VER)
+	docker buildx build -t $(IMAGE_NAME) -t $(IMAGE_NAME):$(CUR_VER) --build-arg VERSION=$(CUR_VER) --no-cache=true .
 
 .PHONY: push
 push: rebuild
-	docker push assaflavie/runlike
-	docker push assaflavie/runlike:$(CUR_VER)
+	docker buildx push $(IMAGE_NAME) 
+	docker buildx push $(IMAGE_NAME):$(CUR_VER)
 
 .PHONY: test
 test:
