@@ -14,7 +14,7 @@ rebuild:
 push:
     # build and push must happen at the same time to push multiple platforms
 	# https://github.com/docker/buildx/issues/1152
-	docker buildx build -t $(IMAGE_NAME) -t $(IMAGE_NAME):$(CUR_VER) --build-arg VERSION=$(CUR_VER) --no-cache=true --push .
+	docker buildx build -t $(IMAGE_NAME) -t $(IMAGE_NAME):$(CUR_VER) --build-arg VERSION=$(CUR_VER) --no-cache=true --platform linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64 --push .
 
 .PHONY: test
 test:
